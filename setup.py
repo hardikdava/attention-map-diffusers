@@ -17,7 +17,7 @@ setup(
     ],
     python_requires='>=3.7',
     install_requires=[
-        "diffusers>=0.29.0",
+        "git+https://github.com/huggingface/diffusers.git@56d438727036b0918b30bbe3110c5fe1634ed19d",
         "accelerate",
         "transformers",
         "einops",
