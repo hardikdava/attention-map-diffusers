@@ -15,7 +15,7 @@ pipe = FluxKontextPipeline.from_pretrained(
 pipe.to('cuda')
 
 ##### 1. Replace modules and Register hook #####
-pipe = init_pipeline(pipe)
+pipe = init_pipeline(pipe, is_kontext=True)
 ################################################
 
 prompt = "Make Pikachu hold a sign that says 'Black Forest Labs is awesome', yarn art style, detailed, vibrant colors"

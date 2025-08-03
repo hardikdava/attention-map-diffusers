@@ -123,7 +123,7 @@ def replace_call_method_for_flux(model):
     return model
 
 
-def init_pipeline(pipeline):
+def init_pipeline(pipeline, is_kontext=False):
     AttnProcessor.__call__ = attn_call
     AttnProcessor2_0.__call__ = attn_call2_0
     LoRAAttnProcessor.__call__ = lora_attn_call
@@ -135,11 +135,23 @@ def init_pipeline(pipeline):
             pipeline.transformer = replace_call_method_for_sd3(pipeline.transformer)
         
         elif pipeline.transformer.__class__.__name__ == 'FluxTransformer2DModel':
-            from diffusers import FluxPipeline
-            FluxAttnProcessor2_0.__call__ = flux_attn_call2_0
-            FluxPipeline.__call__ = FluxPipeline_call
-            pipeline.transformer = register_cross_attention_hook(pipeline.transformer, hook_function, 'attn')
-            pipeline.transformer = replace_call_method_for_flux(pipeline.transformer)
+            if is_kontext:
+                from diffusers import FluxKontextPipeline
+                FluxAttnProcessor2_0.__call__ = flux_attn_call2_0
+                FluxKontextPipeline.__call__ = FluxKontextPipeline_call
+                pipeline.transformer = register_cross_attention_hook(
+                    pipeline.transformer, hook_function, "attn"
+                )
+                pipeline.transformer = replace_call_method_for_flux(
+                    pipeline.transformer
+                )
+
+            else:
+                from diffusers import FluxPipeline
+                FluxAttnProcessor2_0.__call__ = flux_attn_call2_0
+                FluxPipeline.__call__ = FluxPipeline_call
+                pipeline.transformer = register_cross_attention_hook(pipeline.transformer, hook_function, 'attn')
+                pipeline.transformer = replace_call_method_for_flux(pipeline.transformer)
 
         # TODO: implement
         # elif pipeline.transformer.__class__.__name__ == 'SanaTransformer2DModel':
